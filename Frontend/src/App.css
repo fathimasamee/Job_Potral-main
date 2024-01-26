@@ -1,0 +1,14 @@
+#vertical-tabpanel-0 {
+    width: 100%;
+}
+
+#vertical-tabpanel-1 {
+    width: 100%;
+}
+
+.line-clamp {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Adjust the number of lines as needed */
+    -webkit-box-orient: vertical;
+  }
