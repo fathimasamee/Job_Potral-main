@@ -1,26 +1,81 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/dummy-logo.png";
 import ProfAvatar from "../assets/profile-avatar.jpg";
-
 import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import Grid from "@mui/material/Grid";
-
 import { MenuComponent } from "../components/JobSeekerMenuComp";
 import RightDrawerComp from "../components/RightDrawerComp";
 import { NotificationsComp } from "../components/NotificationComp";
 import SearchBar from "../components/SearchBar";
 import SideTabs from "../components/SideTabs";
 import Divider from "@mui/material/Divider";
+import { environment } from "../environment/environment";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import Button from '@mui/material/Button';
+import EditModal from "../components/EditModal";
+
+
+interface UserData {
+  Userdata: {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+
+  };
+
+  JobseekerData?: {
+    address: string;
+    date_of_birth: string;
+    education: string;
+    gender: string;
+    phone_number: string;
+
+  }
+  // other properties...
+}
 
 export default function JobSeekerProfile() {
   const [badgeContent, setBadgeContent] = useState<number>(0);
   const [notifiDrawer, setNotifiDrawer] = useState<boolean>(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+
+
+
+  useEffect(() => {
+    getUserDetails()
+  }, [open])
+
+
+  const getUserDetails = () => {
+    const loginUrl = `${environment.Base_Url}/user/`;
+    const token = Cookies.get('token')
+    console.warn(token)
+    axios.get(loginUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+
+        if (response.status = 200) {
+          setUserData(response.data)
+          console.log(response.data)
+        }
+
+      })
+      .catch((error) => {
+        console.error("Login error:", error)
+      });
+  };
+
 
   const handleNotifiOpen = () => {
-    // setBadgeContent(0);
     setNotifiDrawer(true);
   };
 
@@ -100,44 +155,32 @@ export default function JobSeekerProfile() {
                 src={ProfAvatar}
                 style={{ width: "50%", height: "auto" }}
               />
-              <p className="text-2xl font-semibold mt-1">Username</p>
-              <p className="text-xl text-center font-light">fname lname</p>
-              <p className="text-sm text-center font-extralight">
-                Full stack developer | Video gamer | Designer
-              </p>
+              <p className="text-2xl font-semibold mt-1">{userData?.Userdata?.username} </p>
+              <p className="text-xl text-center font-light">{userData?.Userdata?.first_name}</p>
+              <p className="text-xl text-center font-light">{userData?.Userdata?.last_name}</p>
               <p className="text-sm text-center font-normal mt-2">
-                exampleemail@gmail.com
+                {userData?.Userdata?.email}
               </p>
-              <div className="age w-full flex flex-row">
-                <p className="text-md font-semibold mt-3">Age</p>
-                <p className="text-md text-gray-600 font-normal mt-3 ml-auto">
-                  23
-                </p>
-              </div>
+
               <div className="gender w-full flex flex-row">
                 <p className="text-md font-semibold mt-1">Gender</p>
                 <p className="text-md text-gray-600 font-normal mt-1 ml-auto">
-                  Male
+                  {userData?.JobseekerData?.gender == 'M' ? "Male" : "Female"}
                 </p>
               </div>
               <div className="phone w-full flex flex-row">
                 <p className="text-md font-semibold mt-1">Phone</p>
                 <p className="text-md text-gray-600 font-normal mt-1 ml-auto">
-                  077 1234 567
+                  {userData?.JobseekerData?.phone_number}
                 </p>
               </div>
               <div className="address w-full flex flex-row">
                 <p className="text-md font-semibold mt-auto ">Address</p>
                 <div className="ml-auto">
                   <p className="text-md text-gray-600 font-normal mt-2 ">
-                    address line 1,
+                    {userData?.JobseekerData?.address}
                   </p>
-                  <p className="text-md text-gray-600 font-normal mt-0">
-                    address line 2,
-                  </p>
-                  <p className="text-md text-gray-600 font-normal mt-0">
-                    address line 3
-                  </p>
+
                 </div>
               </div>
               <Divider
@@ -150,44 +193,16 @@ export default function JobSeekerProfile() {
               <div className="education w-full flex flex-col">
                 <p className="text-xl font-semibold mb-2 mt-1">Education</p>
                 <p className="text-md text-justify text-gray-600 font-normal mt-1">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Possimus ipsum expedita
+                  {userData?.JobseekerData?.education}
                 </p>
               </div>
-              <Divider
-                style={{
-                  width: "100%",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              />
-              <div className="about w-full flex flex-col">
-                <p className="text-xl font-semibold mb-2 mt-1">About</p>
-                <p className="text-md text-justify text-gray-600 font-normal mt-1">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Possimus ipsum expedita
-                </p>
-              </div>
-              <Divider
-                style={{
-                  width: "100%",
-                  marginTop: "15px",
-                  marginBottom: "20px",
-                }}
-              />
-              <div className="skills w-full flex flex-col">
-                <p className="text-xl font-semibold mb-2 mt-1">Skills</p>
-                <p className="text-md text-justify text-gray-600 font-normal mt-1">
-                  skill 1
-                </p>
-                <p className="text-md text-justify text-gray-600 font-normal mt-1">
-                  skill 2
-                </p>
-              </div>
+              <div style={{ marginTop: 40 }}><Button variant="contained" onClick={() => setOpen(true)}>Edit</Button></div>
             </div>
           </Grid>
         </Grid>
       </div>
+
+      <EditModal item={userData} open={open} setOpen={setOpen} />
     </>
   );
 }

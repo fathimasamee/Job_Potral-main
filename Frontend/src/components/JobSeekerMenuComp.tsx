@@ -1,12 +1,13 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-
+import Cookies from 'js-cookie';
 interface BasicMenuProps {
   children: React.ReactNode;
 }
@@ -17,10 +18,17 @@ export const MenuComponent: React.FC<BasicMenuProps> = ({ children }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const navigate = useNavigate();
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+
+  const logout = () => {
+    Cookies.remove('token', { path: '/' })
+    handleClose()
+    navigate('/login')
+  };
   return (
     <div>
       <Button
@@ -53,12 +61,12 @@ export const MenuComponent: React.FC<BasicMenuProps> = ({ children }) => {
         }}
       >
         {/* <Link to="/login"> */}
-        <Link to="/login">
-          <MenuItem onClick={handleClose}>
+       
+          <MenuItem onClick={logout}>
             <LogoutRoundedIcon className="mr-2" />
             Logout
           </MenuItem>
-        </Link>
+
       </Menu>
     </div>
   );

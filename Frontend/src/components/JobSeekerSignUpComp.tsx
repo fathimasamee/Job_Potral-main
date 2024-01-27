@@ -37,6 +37,8 @@ interface InputState {
 }
 
 interface User {
+  first_name: string | undefined;
+  last_name: string | undefined;
   username: string | undefined;
   password: string | undefined;
   email: string | undefined;
@@ -98,13 +100,15 @@ export const JobSeekerSignUpComp: React.FC<CustomizedDialogsProps> = ({
 
 
   function RegisterJobSeeker(): void {
-    
+
 
     const url: string = environment.Base_Url + '/api/register/';
     const data: RegistrationData = {
       user: {
         username: inputs?.username,
         password: inputs?.password,
+        first_name: inputs?.first_name,
+        last_name: inputs?.last_name,
         email: inputs?.email,
       },
       job_seeker: {
@@ -119,16 +123,16 @@ export const JobSeekerSignUpComp: React.FC<CustomizedDialogsProps> = ({
 
 
     axios.post(url, data)
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .finally(function () {
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
 
-    });
-}
+      });
+  }
 
 
 

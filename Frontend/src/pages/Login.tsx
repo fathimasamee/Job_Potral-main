@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link as DomLink } from "react-router-dom";
 import Logo from "../assets/dummy-logo.png";
-
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
@@ -14,8 +13,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { environment } from "../environment/environment";
-
 import axios from 'axios';
+import Cookies from 'js-cookie'
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +24,7 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginError, setLoginError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
@@ -36,22 +37,26 @@ export default function Login() {
   const handleLogin = () => {
     const loginUrl = `${environment.Base_Url}/login`;
     console.log("Login URL:", loginUrl);
-    // console.log("Username:", inputs?.username);
-    // console.log("Password:", inputs?.password);
+    ;
     axios.post(loginUrl, {
-      username:  username,
-      password:  password,
-      // username:  inputs?.username,
-      // password:  inputs?.password,
+      username: username,
+      password: password,
+
     })
-    .then((response) => {
-      console.log("Login successful:", response.data);
-    })
-    .catch((error) => {
-     
-      setLoginError("Invalid username or password");
-      console.error("Login error:", error);
-    });
+      .then((response) => {
+        if (response.status = 200) {
+          Cookies.set('token', response.data.token, { expires: 7, path: '/' })
+          navigate('/jobseeker')
+        } else {
+          setLoginError("Invalid username or password");
+        }
+
+      })
+      .catch((error) => {
+
+        setLoginError("Invalid username or password");
+        console.error("Login error:", error);
+      });
   };
 
 
@@ -121,8 +126,8 @@ export default function Login() {
             />
           </FormControl>
           {loginError && (
-        <p style={{ color: "red", marginBottom: "10px" }}>{loginError}</p>
-      )}
+            <p style={{ color: "red", marginBottom: "10px" }}>{loginError}</p>
+          )}
 
           <Button
             autoFocus
