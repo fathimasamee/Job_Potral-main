@@ -20,6 +20,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import axios from 'axios';
 import { collapseClasses } from "@mui/material";
 import { environment } from "../environment/environment";
+import Cookies from 'js-cookie'
+import { useNavigate } from "react-router-dom";
+
 // import { useHistory } from 'react-router-dom';
 
 
@@ -78,7 +81,7 @@ export const JobSeekerSignUpComp: React.FC<CustomizedDialogsProps> = ({
   const [genderError, setgenderError] = useState<String | null>('');
   const [dateError, setdateError] = useState<String | null>('');
 
-
+  const navigate = useNavigate();
   function validatePhoneNumber(phoneNumber: string): boolean {
     const phnNoValidator: RegExp = /^(?:\d{10}|\d{2}-\d{7}|\d{3}-\d{6}|\d{2}-\d{3}-\d{4})$/;
     return phnNoValidator.test(phoneNumber);
@@ -124,7 +127,11 @@ export const JobSeekerSignUpComp: React.FC<CustomizedDialogsProps> = ({
 
     axios.post(url, data)
       .then(function (response) {
-        console.log(response);
+        if (response.status = 200) {
+          Cookies.set('token', response.data.token, { expires: 7, path: '/' })
+          navigate('/jobseeker')
+          handleClose()
+        }
       })
       .catch(function (error) {
         console.log(error);

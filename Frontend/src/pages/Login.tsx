@@ -162,7 +162,7 @@ export default function Login() {
                 marginTop: "30px",
               }}
               onClick={() => {
-                console.log("test");
+                navigate('/')
               }}
             >
               Create new Account

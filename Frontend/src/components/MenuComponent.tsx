@@ -47,7 +47,7 @@ export default function BasicMenu() {
         }}
       >
         {/* <Link to="/login"> */}
-        <Link to="/jobseeker">
+        <Link to="/login">
           <MenuItem onClick={handleClose}>Job Seeker</MenuItem>
         </Link>
         {/* <Link to="/login"> */}
